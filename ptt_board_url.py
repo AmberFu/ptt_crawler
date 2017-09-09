@@ -169,7 +169,7 @@ def ptt_content_to_title(content):
     rent_soup = soup.find_all('div', 'r-ent')
 
     # get next page :
-    next_page = soup.find_all('a', 'btn wide')[1]['href']
+    # next_page = soup.find_all('a', 'btn wide')[1]['href']
 
     # get board name :
     board_name = soup.find('a', 'board')['href'].split('/')[2]
