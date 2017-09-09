@@ -51,7 +51,7 @@ hot_board_df = pd.DataFrame(hot_board_df)
 # cur = db.cursor()
 
 # connect to postgreSQL :
-connect_str = "dbname='' user='amber' host='localhost' password= 'ww211214' "
+connect_str = "dbname=pttdb'' user='amber' host='localhost' password= 'ww211214' "
 conn = pg.connect(connect_str)
 cursor = conn.cursor()
 cursor.execute("""CREATE TABLE tutorials (name char(40));""")
