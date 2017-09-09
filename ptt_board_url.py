@@ -138,33 +138,51 @@ def get_into_board(board_name):
     else:
         print('status_code != 200')
 
+def ptt_content_to_url(content):
+    from bs4 import BeautifulSoup
+    # 進行解析
+    soup = BeautifulSoup(content, "html.parser")
+    # get next page :
+    next_page = soup.find_all('a', 'btn wide')[1]['href']
+    next_page_url = 'https://www.ptt.cc' + next_page
+    return next_page_url
+
+def ptt_url_to_content(url):
+    import requests
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    board_name = url.split('/', 3)[3]
+    load = {
+        'from': '/bbs/' + board_name,
+        'yes': 'yes'
+    }
+    rs = requests.session()
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    res = rs.post('https://www.ptt.cc/ask/over18', verify=False, data=load)
+    res = rs.get(url)
 
 # 取得各版內容標題:
-def get_rent_lists(content):
+def ptt_content_to_title(content):
     from bs4 import BeautifulSoup
     import pandas as pd
     # 進行解析
     soup = BeautifulSoup(content, "html.parser")
     rent_soup = soup.find_all('div', 'r-ent')
 
-    # get board name :
-    board_name = soup.find('a', 'board')['href'].split('/')[2]
-
     # get next page :
     next_page = soup.find_all('a', 'btn wide')[1]['href']
-    print('next_page url: ', next_page)
+
+    # get board name :
+    board_name = soup.find('a', 'board')['href'].split('/')[2]
 
     # get nrec :
     nrec_lists = []
     for nrec in rent_soup:
         nrec_lists.append(nrec.find('div', 'nrec').string)
-        print('nrec = ', nrec.find('div', 'nrec').string)
 
     # get mark :
     mark_lists = []
     for mark in rent_soup:
         mark_lists.append(mark.find('div', 'mark').string)
-        print('mark = ', mark.find('div', 'mark').string)
 
     # get title & href:
     title_lists = []
@@ -172,26 +190,20 @@ def get_rent_lists(content):
     for title in rent_soup:
         if title.find('div', 'title').a != None:
             title_lists.append(title.find('div', 'title').a.string)
-            print('title = ', title.find('div', 'title').a.string)
             href_lists.append(title.find('div', 'title').a['href'])
-            print('href = ', title.find('div', 'title').a['href'])
         else:
             title_lists.append(title.find('div', 'title').string)
-            print('title = ', title.find('div', 'title').string)
             href_lists.append('None')
-            print('href = None')
 
     # get date :
     date_lists = []
     for md in rent_soup:
         date_lists.append(md.find('div', 'date').string)
-        print('date = ', md.find('div', 'date').string)
 
     # get author :
     author_lists = []
     for author in rent_soup:
         author_lists.append(author.find('div', 'author').string)
-        print('author = ', author.find('div', 'author').string)
 
     # get r-ent info :
     r_ent_df = pd.DataFrame({ 'board': board_name,
@@ -199,7 +211,7 @@ def get_rent_lists(content):
                                 'mark': mark_lists,
                                 'title': title_lists,
                                 'href': href_lists,
-                                'date': date_lists,
+                                'dates': date_lists,
                                 'author': author_lists})
     return r_ent_df
 

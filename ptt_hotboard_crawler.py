@@ -51,21 +51,21 @@ hot_board_df = pd.DataFrame(hot_board_df)
 # cur = db.cursor()
 
 # connect to postgreSQL :
-connect_str = "dbname=pttdb'' user='amber' host='localhost' password= 'ww211214' "
+connect_str = " dbname='pttdb' user='amber' host='localhost' password= 'ww211214' "
 conn = pg.connect(connect_str)
 cursor = conn.cursor()
-cursor.execute("""CREATE TABLE tutorials (name char(40));""")
 
 
 # get into board
 for board_name in hot_board_name:
-    print('start time : ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) )
+    print('start time : ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print('board name : ', board_name)
     content = ptt.get_into_board(board_name)
-    r_ent_df = ptt.get_rent_lists(content)
+    next_url = ptt.ptt_content_to_url(content)
+    r_ent_df = ptt.ptt_content_to_title(content)
     print('--------------')
     print(r_ent_df)
-    print('write db time : ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) )
+    print('write db time : ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
-    print('end time : ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) )
+    print('end time : ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
