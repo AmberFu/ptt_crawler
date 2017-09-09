@@ -26,16 +26,24 @@ hot_board_name = ptt.get_boardname(hot_board, hot_num)
 # get title
 hot_board_title = ptt.get_title(hot_board, hot_num)
 
+# get datetime
+timenow = time.localtime()
+datetimeNow = time.strftime("%Y-%m-%d %H:%M:%S", timenow)
+# datetimeNow = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # import datetime
+
 hot_board_df = pd.DataFrame({
-    'board_name':hot_board_name,
-    'board_title':hot_board_title,
     'board_classify':hot_board_classify,
+    'board_name':hot_board_name,
     'board_nuser':hot_board_nuser,
-    'board_url':hot_board_url
+    'board_title':hot_board_title,
+    'board_url':hot_board_url,
+    'get_datetime':datetimeNow
 })
 
-print('hot_board_df : ', hot_board_df)
+print('hot_board_df: ', hot_board_df)
 
+
+#########
 df = []
 # get into board
 for board_name in hot_board_name:
