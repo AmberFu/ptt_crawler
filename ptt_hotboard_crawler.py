@@ -5,7 +5,7 @@ import pandas as pd
 # from mysql import connector
 import psycopg2 as pg
 import time
-import numpy as np
+
 
 hoturl = 'https://www.ptt.cc/bbs/hotboards.html'
 hot_board = ptt.get_js_page(hoturl)
