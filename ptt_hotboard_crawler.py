@@ -30,8 +30,9 @@ print('df = ', df)
 print('--------------')
 
 # connect to postgreSQL :
+pwd = input(">>> keyin your password: ")
 try:
-    connect_str = " dbname = 'pttdb' user = 'amber' host = 'localhost' password = 'ww211214' "
+    connect_str = " dbname = 'pttdb' user = 'amber' host = 'localhost' password = '" + pwd + "'"
     conn = pg.connect(connect_str)
     print('Prepare to write into database...')
 except:
