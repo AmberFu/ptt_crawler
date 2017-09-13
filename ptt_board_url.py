@@ -1,25 +1,8 @@
-def get_a_board(url):
-    import requests
-    from bs4 import BeautifulSoup
-
-    # 發送請求
-    # ex: r = requests.get('https://api.github.com/user', auth=('user', 'pass'))
-    req = requests.get(url)
-    if req.status_code == 200:
-        # get page text
-        content = req.text
-        # 進行解析
-        soup = BeautifulSoup(content, "html.parser")
-        a_board = soup.find_all('a', 'board')
-        return a_board
-    else:
-        print('status_code != 200')
-
-
 def get_js_page(url):
     from bs4 import BeautifulSoup
     from selenium import webdriver
-    driver = webdriver.Firefox()
+    # driver = webdriver.Firefox()
+    driver = webdriver.PhantomJS()
     driver.get(url)  # 把網址交給瀏覽器
     pagesource = driver.page_source  # 取得網頁原始碼
     soup = BeautifulSoup(pagesource, "html.parser")
@@ -117,6 +100,24 @@ def get_boardname(a_board, a_num):
             break
     return result
 
+##### Get article :
+
+def get_a_board(url):
+    import requests
+    from bs4 import BeautifulSoup
+    # 發送請求
+    # ex: r = requests.get('https://api.github.com/user', auth=('user', 'pass'))
+    req = requests.get(url)
+    if req.status_code == 200:
+        # get page text
+        content = req.text
+        # 進行解析
+        soup = BeautifulSoup(content, "html.parser")
+        a_board = soup.find_all('a', 'board')
+        return a_board
+    else:
+        print('status_code != 200')
+
 
 # 取得各熱門看板第一頁:
 def get_into_board(board_name):
@@ -164,6 +165,7 @@ def ptt_url_to_content(url):
 def ptt_content_to_title(content):
     from bs4 import BeautifulSoup
     import pandas as pd
+    import time
     # 進行解析
     soup = BeautifulSoup(content, "html.parser")
     rent_soup = soup.find_all('div', 'r-ent')
@@ -205,6 +207,10 @@ def ptt_content_to_title(content):
     for author in rent_soup:
         author_lists.append(author.find('div', 'author').string)
 
+    # get info time :
+    timenow = time.localtime()
+    get_time = time.strftime("%Y-%m-%d %H:%M:%S", timenow)
+
     # get r-ent info :
     r_ent_df = pd.DataFrame({ 'board': board_name,
                                 'nrec': nrec_lists,
@@ -212,6 +218,7 @@ def ptt_content_to_title(content):
                                 'title': title_lists,
                                 'href': href_lists,
                                 'dates': date_lists,
-                                'author': author_lists})
+                                'author': author_lists,
+                              'get_time': get_time})
     return r_ent_df
 

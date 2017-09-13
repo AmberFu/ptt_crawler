@@ -37,35 +37,39 @@ hot_board_df = pd.DataFrame({
 
 print('hot_board_df: ', hot_board_df)
 
+###### Insert data to Postger Database :
+
 # connect to postgreSQL :
-connect_str = " dbname = 'pttdb' user = 'amber' host = 'localhost' password = 'ww211214' "
-conn = pg.connect(connect_str)
+try:
+    connect_str = " dbname = 'pttdb' user = 'amber' host = 'localhost' password = 'ww211214' "
+    conn = pg.connect(connect_str)
+    print('Prepare to write into database!')
+except:
+    print("Unable to connect to the postgreSQL!")
+
 cur = conn.cursor()
 
-
-##############
-# https://www.ryanbaumann.com/blog/2016/4/30/python-pandas-tosql-only-insert-new-rows
-# https://nelsonslog.wordpress.com/2015/04/27/inserting-lots-of-data-into-a-remote-postgres-efficiently/
-##############
-
-# prepare query
-sql1 = """INSERT INTO hotboard_user_number (
+try:
+    # prepare query
+    sql1 = """INSERT INTO hotboard_user_number (
                             board_classify, 
                             board_name,
                             board_nuser,
                             board_title,
                             board_url,
                             get_datetime) 
-            VALUES (%s, %s, %s, %s, %s, %s); """
+            VALUES (%s, %s, %s, %s, %s, %s) """
 
-data1 = hot_board_df
-
-# Execute a command
-cur.execute(sql1, data1)
-
-# Query the database and obtain data as Python objects
-cur.execute("SELECT * FROM test;")
-cur.fetchone()
+    for n in range(len(hot_board_df)):
+        cur.execute(sql1, (hot_board_df.get_value(n, 'board_classify'),
+                           hot_board_df.get_value(n, 'board_name'),
+                           hot_board_df.get_value(n, 'board_nuser'),
+                           hot_board_df.get_value(n, 'board_title'),
+                           hot_board_df.get_value(n, 'board_url'),
+                           hot_board_df.get_value(n, 'get_datetime')))
+    print('Insert sucessfully!')
+except:
+    print('Can not execute query!')
 
 # Make the changes to the database persistent
 conn.commit()
