@@ -194,7 +194,7 @@ def ptt_content_to_title(content):
             title_lists.append(title.find('div', 'title').a.string)
             href_lists.append(title.find('div', 'title').a['href'])
         else:
-            title_lists.append(title.find('div', 'title').string)
+            title_lists.append(title.find('div', 'title').string.strip())
             href_lists.append('None')
 
     # get date :
