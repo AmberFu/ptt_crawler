@@ -166,6 +166,7 @@ def ptt_content_to_title(content):
     from bs4 import BeautifulSoup
     import pandas as pd
     import time
+
     # 進行解析
     soup = BeautifulSoup(content, "html.parser")
     rent_soup = soup.find_all('div', 'r-ent')

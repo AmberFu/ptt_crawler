@@ -1,7 +1,5 @@
-# import ptt_board_url as ptt
-# import pandas as pd
-# import time
-
+import time
+import pandas as pd
 
 def get_content(url):
     import requests
@@ -70,7 +68,6 @@ def get_content_data(content):
     # get info time :
     timenow = time.localtime()
     get_time = time.strftime("%Y-%m-%d %H:%M:%S", timenow)
-    print()
 
     # get r-ent info :
     r_ent_df = pd.DataFrame({'board': board_lists,
@@ -83,12 +80,27 @@ def get_content_data(content):
 
 
 ###
-
+start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 allPost_url = 'https://www.ptt.cc/bbs/ALLPOST/index.html'
 content = get_content(allPost_url)
 data = get_content_data(content)
-pageNum = get_allPost_pageNumber(content)
+pageNum = int(get_allPost_pageNumber(content))
 
-for i in range(pageNum):
-    print('i = ', i)
+while pageNum > 0:
+    url = 'https://www.ptt.cc/bbs/ALLPOST/index'+str(pageNum)+'.html'
+    contents = get_content(url)
+    df2 = get_content_data(contents)
+    data = data.append(df2)
+    print('pageNum = ', pageNum)
+    pageNum = pageNum - 1
 
+data = data.reset_index(level = range(len(data)), drop = True)
+# print('data = ', data)
+end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+print('start_time : ', start_time)
+print('end_time : ', end_time)
+
+data_name = 'PttAllPost_'+ time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + '.json'
+
+pd.DataFrame.to_json(data, data_name, encoding='utf-8')
+print('Finish!')
