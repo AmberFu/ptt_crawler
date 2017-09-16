@@ -1,5 +1,6 @@
 import time
 import pandas as pd
+import sys
 
 def get_content(url):
     import requests
@@ -46,8 +47,13 @@ def get_content_data(content):
     for title in rent:
         if title.find('div', 'title').a != None:
             title_broad = title.find('div', 'title').a.string
+            print('type of title_broad : ', type(title_broad))
             board = title_broad.split(r"(")[1].split(r")")[0]
-            title_name = title_broad.split(r"(")[0].strip()
+            try:
+                title_name = title_broad.split(r"(")[0].strip()
+            except:
+                title_name = title_broad.split(r"(")[0]
+                print('except...')
 
             title_lists.append(title_name)
             board_lists.append(board)
@@ -86,21 +92,30 @@ content = get_content(allPost_url)
 data = get_content_data(content)
 pageNum = int(get_allPost_pageNumber(content))
 
-while pageNum > 0:
-    url = 'https://www.ptt.cc/bbs/ALLPOST/index'+str(pageNum)+'.html'
-    contents = get_content(url)
-    df2 = get_content_data(contents)
-    data = data.append(df2)
-    print('pageNum = ', pageNum)
-    pageNum = pageNum - 1
+try:
+    get_num = int(input("How many pages you want to get? (input integer or 0 means get all) :"))
+    if get_num == 0:
+        page_end = 0
+    else:
+        page_end = pageNum - get_num
+        print('page_end: ', page_end)
 
-data = data.reset_index(level = range(len(data)), drop = True)
-# print('data = ', data)
-end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-print('start_time : ', start_time)
-print('end_time : ', end_time)
+    while pageNum > page_end :
+        url = 'https://www.ptt.cc/bbs/ALLPOST/index' + str(pageNum) + '.html'
+        contents = get_content(url)
+        df2 = get_content_data(contents)
+        data = data.append(df2)
+        print('pageNum = ', pageNum)
+        pageNum = pageNum - 1
 
-data_name = 'PttAllPost_'+ time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + '.json'
 
-pd.DataFrame.to_json(data, data_name, encoding='utf-8')
-print('Finish!')
+    data = data.reset_index(level = range(len(data)), drop = True)
+    end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    print('start_time : ', start_time)
+    print('end_time : ', end_time)
+
+    data_name = 'PttAllPost_'+ time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + '.csv'
+    pd.DataFrame.to_csv(data, data_name, encoding='utf-8')
+    print('Finish!')
+except:
+    print("Something wrong! The info is...", sys.exc_info())
