@@ -1,6 +1,7 @@
 import time
 import pandas as pd
 import sys
+import random
 
 def get_content(url):
     import requests
@@ -32,6 +33,7 @@ def get_allPost_pageNumber(content):
     Num = pageNum[5:]
     return Num
 
+
 def get_content_data(content):
     from bs4 import BeautifulSoup
     import time
@@ -39,7 +41,6 @@ def get_content_data(content):
     # 進行解析
     soup = BeautifulSoup(content, "html.parser")
     rent = soup.find_all('div', 'r-ent')
-
     # get title & href:
     title_lists = []
     board_lists = []
@@ -48,33 +49,34 @@ def get_content_data(content):
         if title.find('div', 'title').a != None:
             title_broad = title.find('div', 'title').a.string
             print('type of title_broad : ', type(title_broad))
-            board = title_broad.split(r"(")[1].split(r")")[0]
             try:
+                board = title_broad.split(r"(")[-1].split(r")")[0]
                 title_name = title_broad.split(r"(")[0].strip()
+                print('board = ', board)
+                print('title_name = ', title_name)
+            except AttributeError:
+                board = 'NA'
+                title_name = 'NA'
+                print('AttributeError!')
             except:
-                title_name = title_broad.split(r"(")[0]
-                print('except...')
+                print('Unknown Error')
 
             title_lists.append(title_name)
             board_lists.append(board)
             href_lists.append(title.find('div', 'title').a['href'])
-        else:
+        else:   # all have title even if it doesn't exist
             print('Something wrong...')
-
     # get date :
     date_lists = []
     for md in rent:
         date_lists.append(md.find('div', 'date').string)
-
     # get author :
     author_lists = []
     for author in rent:
         author_lists.append(author.find('div', 'author').string)
-
     # get info time :
     timenow = time.localtime()
     get_time = time.strftime("%Y-%m-%d %H:%M:%S", timenow)
-
     # get r-ent info :
     r_ent_df = pd.DataFrame({'board': board_lists,
                              'title': title_lists,
@@ -85,7 +87,7 @@ def get_content_data(content):
     return r_ent_df
 
 
-###
+##########
 start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 allPost_url = 'https://www.ptt.cc/bbs/ALLPOST/index.html'
 content = get_content(allPost_url)
@@ -107,7 +109,8 @@ try:
         data = data.append(df2)
         print('pageNum = ', pageNum)
         pageNum = pageNum - 1
-
+        r_sec = random.random()
+        time.sleep(r_sec)
 
     data = data.reset_index(level = range(len(data)), drop = True)
     end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
