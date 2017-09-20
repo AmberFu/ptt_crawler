@@ -48,12 +48,12 @@ def get_content_data(content):
     for title in rent:
         if title.find('div', 'title').a != None:
             title_broad = title.find('div', 'title').a.string
-            print('type of title_broad : ', type(title_broad))
+            # print('type of title_broad : ', type(title_broad))
             try:
                 board = title_broad.split(r"(")[-1].split(r")")[0]
                 title_name = title_broad.split(r"(")[0].strip()
-                print('board = ', board)
-                print('title_name = ', title_name)
+                # print('board = ', board)
+                # print('title_name = ', title_name)
             except AttributeError:
                 board = 'NA'
                 title_name = 'NA'
@@ -95,22 +95,23 @@ data = get_content_data(content)
 pageNum = int(get_allPost_pageNumber(content))
 
 try:
-    get_num = int(input("How many pages you want to get? (input integer or 0 means get all) :"))
-    if get_num == 0:
-        page_end = 0
-    else:
-        page_end = pageNum - get_num
-        print('page_end: ', page_end)
+    # get_num = int(input("How many pages you want to get? (input integer or 0 means get all) :"))
+    # if get_num == 0:
+    #     page_end = 0
+    # else:
+    #     page_end = pageNum - get_num
+    #     print('page_end: ', page_end)
 
-    while pageNum > page_end :
+    # while pageNum > page_end :
+    while pageNum > 0:
         url = 'https://www.ptt.cc/bbs/ALLPOST/index' + str(pageNum) + '.html'
         contents = get_content(url)
         df2 = get_content_data(contents)
         data = data.append(df2)
         print('pageNum = ', pageNum)
         pageNum = pageNum - 1
-        r_sec = random.random()
-        time.sleep(r_sec)
+        # r_sec = random.random()
+        # time.sleep(r_sec)
 
     data = data.reset_index(level = range(len(data)), drop = True)
     end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -118,6 +119,7 @@ try:
     print('end_time : ', end_time)
 
     data_name = 'PttAllPost_'+ time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + '.csv'
+    print('Saving data to csv file in ~/ptt_crawler/', data_name, ' ...')
     pd.DataFrame.to_csv(data, data_name, encoding='utf-8')
     print('Finish!')
 except:
