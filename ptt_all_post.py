@@ -110,8 +110,8 @@ try:
         data = data.append(df2)
         print('pageNum = ', pageNum)
         pageNum = pageNum - 1
-        # r_sec = random.random()
-        # time.sleep(r_sec)
+        r_sec = random.random()
+        time.sleep(r_sec)
 
     data = data.reset_index(level = range(len(data)), drop = True)
     end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
