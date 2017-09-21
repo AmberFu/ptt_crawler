@@ -87,7 +87,7 @@ def get_content_data(content):
     return r_ent_df
 
 
-##########
+#########
 start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 allPost_url = 'https://www.ptt.cc/bbs/ALLPOST/index.html'
 content = get_content(allPost_url)
