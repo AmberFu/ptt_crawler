@@ -94,24 +94,46 @@ content = get_content(allPost_url)
 data = get_content_data(content)
 pageNum = int(get_allPost_pageNumber(content))
 
-try:
-    # get_num = int(input("How many pages you want to get? (input integer or 0 means get all) :"))
-    # if get_num == 0:
-    #     page_end = 0
-    # else:
-    #     page_end = pageNum - get_num
-    #     print('page_end: ', page_end)
 
-    # while pageNum > page_end :
-    while pageNum > 0:
-        url = 'https://www.ptt.cc/bbs/ALLPOST/index' + str(pageNum) + '.html'
+try:
+
+    # while pageNum > 0:
+    #     url = 'https://www.ptt.cc/bbs/ALLPOST/index' + str(pageNum) + '.html'
+    #     contents = get_content(url)
+    #     df2 = get_content_data(contents)
+    #     data = data.append(df2)
+    #     print('pageNum = ', pageNum)
+    #     pageNum = pageNum - 1
+    #     r_sec = random.random()
+    #     time.sleep(r_sec)
+
+    for i in list(range((pageNum*2)//3, pageNum+1)):
+        print('pageNum = ', i)
+        url = 'https://www.ptt.cc/bbs/ALLPOST/index' + str(i) + '.html'
         contents = get_content(url)
         df2 = get_content_data(contents)
         data = data.append(df2)
-        print('pageNum = ', pageNum)
-        pageNum = pageNum - 1
-        r_sec = random.random()
-        time.sleep(r_sec)
+
+    r_sec = random.random()
+    time.sleep(r_sec)
+
+    for i in list(range(pageNum//3, (pageNum*2)//3)):
+        print('pageNum = ', i)
+        url = 'https://www.ptt.cc/bbs/ALLPOST/index' + str(i) + '.html'
+        contents = get_content(url)
+        df2 = get_content_data(contents)
+        data = data.append(df2)
+
+    r_sec = random.random()
+    time.sleep(r_sec)
+
+    for i in list(range(pageNum//3)):
+        print('pageNum = ', i)
+        url = 'https://www.ptt.cc/bbs/ALLPOST/index' + str(i) + '.html'
+        contents = get_content(url)
+        df2 = get_content_data(contents)
+        data = data.append(df2)
+
 
     data = data.reset_index(level = range(len(data)), drop = True)
     end_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
