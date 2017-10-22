@@ -92,7 +92,7 @@ def get_max_min_date(soup):
     max_min_date = [max_date_day, min_date_day]
     return max_min_date
 
-
+# 4. get data:
 def get_content_data(soup):
     import time
     import pandas as pd
@@ -150,7 +150,7 @@ def get_content_data(soup):
 
 
 
-
+# 5. Check date in the page:
 def crawler_allpost(maxPages, target_days):
     import pandas as pd
     df = pd.DataFrame()
