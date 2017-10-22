@@ -231,7 +231,7 @@ def main():
         # Find out target day:
         target_days = today_date - datetime.timedelta(days = int_days - 1)
         print('target_days = ', target_days)
-        print('\ndate_f == today_date ? ', target_days == today_date)
+        # print('\ndate_f == today_date ? ', target_days == today_date)
 
         # file:
         outputFile = opts[1][1]
