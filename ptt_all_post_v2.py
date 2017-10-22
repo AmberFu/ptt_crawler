@@ -169,16 +169,6 @@ def get_page_range(input_date_f, min_date, max_date, maxPages):
     comfirm = comfirm_page_range(guest_1_date, input_date_f)
     print('comfirm = ', comfirm)
 
-    # the guess quite fine, to get +1 day's page:
-    # end_pageNum = start_num + 500
-    # guest_2_date = check_page_range(end_pageNum)
-
-
-
-
-
-
-
 
 
 def main():
