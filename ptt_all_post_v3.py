@@ -10,6 +10,7 @@ def get_contentSoup(url):
     import requests
     import urllib3
     from bs4 import BeautifulSoup
+    
     from_str = url.split('/', 3)[3]
     # For over18 POST:
     load = {
@@ -23,8 +24,8 @@ def get_contentSoup(url):
         'Connection': 'keep-alive',
     }
 
+    urllib3.disable_warnings(urllib3.exceptions.SecurityWarning)
     rs = requests.session()
-    urllib3.disable_warnings()
     res = rs.post('https://www.ptt.cc/ask/over18', verify=False, data=load)
     res = rs.get(url, headers=headers)
     if res.status_code == 200:
