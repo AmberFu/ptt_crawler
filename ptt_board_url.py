@@ -1,3 +1,4 @@
+### 1. Get board Page html:
 def get_js_page(url):
     from bs4 import BeautifulSoup
     from selenium import webdriver
@@ -9,6 +10,51 @@ def get_js_page(url):
     a_board = soup.find_all('a', 'board')
     return a_board
 
+### 2. Get board dataframe:
+def get_hotboard_df(hot_board):
+    import pandas as pd
+    import time
+
+    url_list = []
+    board_list = []
+    user_num_list = []
+    class_list = []
+    title_list = []
+    getTime_list = []
+
+    for a in hot_board:
+        # Url:
+        board_href = a['href']
+        board_url = 'https://www.ptt.cc' + board_href
+        url_list.append(board_url)
+        # board-name:
+        board_name = a.find('div', 'board-name').string.strip()
+        board_list.append(board_name)
+        # board-nuser:
+        board_nuser = a.find('div', 'board-nuser').string.strip()
+        user_num_list.append(board_nuser)
+        # board-class:
+        board_class = a.find('div', 'board-class').string.strip()
+        class_list.append(board_class)
+        # board-title:
+        board_title = a.find('div', 'board-title').string.strip()
+        title_list.append(board_title)
+        # get info time :
+        timenow = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        getTime_list.append(timenow)
+
+    # Combine as a DataFrame:
+    columns_order = ['board', 'nuser', 'class', 'title', 'href', 'get_time']
+    boards_df = pd.DataFrame({'board': board_list,
+                              'class': class_list,
+                              'nuser': user_num_list,
+                              'title': title_list,
+                              'href': url_list,
+                              'get_time': getTime_list},
+                             columns = columns_order)
+    return boards_df
+
+###
 
 def get_url(a_board, a_num):
     result = []
@@ -16,6 +62,7 @@ def get_url(a_board, a_num):
     while a < a_num:
         a_board_n = a_board[a]
         a_href = a_board_n['href'].split('/')[0]
+        print('a_href = ', a_href)
         if len(a_href) == 0:
             board_href = a_board_n['href']
             board_url = 'https://www.ptt.cc' + board_href
@@ -23,6 +70,7 @@ def get_url(a_board, a_num):
             a += 1
         else:
             break
+    print('result = ', result)
     return result
 
 
@@ -122,16 +170,24 @@ def get_a_board(url):
 # 取得各熱門看板第一頁:
 def get_into_board(board_name):
     import requests
-    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    import urllib3
+    # from requests.packages.urllib3.exceptions import InsecureRequestWarning
     url = 'https://www.ptt.cc/bbs/' + board_name + '/index.html'
     load = {
         'from': '/bbs/' + board_name + '/index.html',
         'yes': 'yes'
     }
+    # For GET:
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:56.0) Gecko/20100101 Firefox/56.0',
+        'Host': 'www.ptt.cc',
+        'Connection': 'keep-alive',
+    }
     rs = requests.session()
-    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    urllib3.disable_warnings()
+    # requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     res = rs.post('https://www.ptt.cc/ask/over18', verify=False, data=load)
-    res = rs.get(url)
+    res = rs.get(url,headers=headers)
     if res.status_code == 200:
         # get page text
         content = res.text
@@ -150,14 +206,14 @@ def ptt_content_to_url(content):
 
 def ptt_url_to_content(url):
     import requests
-    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    import urllib3
     board_name = url.split('/', 3)[3]
     load = {
         'from': '/bbs/' + board_name,
         'yes': 'yes'
     }
     rs = requests.session()
-    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    urllib3.disable_warnings()
     res = rs.post('https://www.ptt.cc/ask/over18', verify=False, data=load)
     res = rs.get(url)
 

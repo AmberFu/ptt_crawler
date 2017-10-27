@@ -1,3 +1,5 @@
 # Ingore file:
 *.csv
+*.txt
+*.log
 
