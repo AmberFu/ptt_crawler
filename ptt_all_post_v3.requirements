@@ -1,0 +1,5 @@
+termcolor
+requests
+urllib3
+pandas
+bs4
