@@ -28,5 +28,6 @@ The crawler for PTT hot board and PTT ALLPOST, but it's still update.
 
 ```
 docker build -t ptt_crawler .
+mkdir out
 docker run -v `pwd`/out:/usr/src/app/out ptt_crawler
 ```
