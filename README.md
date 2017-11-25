@@ -3,14 +3,21 @@ The crawler for PTT hot board and PTT ALLPOST, but it's still update.
 
 ### PTT ALLPOST
 
-python3 ptt_all_post_v3.py -d 1 -o ~/output/path/file.txt
+##### python3 ptt_all_post_v3.py -d 1 -o ~/output/path/file.txt
 
 > -d 抓取天數，int，範圍 1 ~ 7 （ 1 代表今天，會抓到今天凌晨 00:00 ）
 > 
 > -o 輸出的檔名路徑
 > 
 
-python3 ptt_all_post_v3.py -h 
+##### python3 ptt_all_post_v3.py -h 
 
 > -h 提示
 > 
+
+### PTT HOT BOARD
+
+抓取 熱門看板數據 ： 版標,人數...等
+
+##### python3 ptt_hotboards_v1.py
+
