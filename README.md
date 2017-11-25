@@ -12,6 +12,11 @@ The crawler for PTT hot board and PTT ALLPOST, but it's still update.
 > -o 輸出的檔名路徑
 > 
 
+##### python3 ptt_all_post_v4.py -h 
+
+> -h 提示
+> 
+
 ------
 
 ##### python3 ptt_all_post_v3.py -d 1 -o ~/output/path/file.txt
@@ -23,7 +28,7 @@ The crawler for PTT hot board and PTT ALLPOST, but it's still update.
 > -o 輸出的檔名路徑
 > 
 
-##### python3 ptt_all_post_v4.py -h 
+##### python3 ptt_all_post_v3.py -h 
 
 > -h 提示
 > 
