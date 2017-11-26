@@ -235,7 +235,6 @@ def check_date_from_article(soup, target_days):
     metaValue = soup.find_all('span', 'article-meta-value')
     if len(metaValue) == 4:
         time_str = metaValue[3].string.split(' ')  # Sat Nov 25 13:02:26 2017
-        print('time_str = ', time_str)
         # week_en = time_str[0]
         month_en = time_str[1]  #
         mday_en = time_str[2]  #
@@ -264,8 +263,6 @@ def check_date_from_article(soup, target_days):
         if len(month_num) >= 1:
             article_date_str = '{}/{}/{}'.format(year_en, month_num, mday_en)
             article_date = datetime.datetime.strptime(article_date_str, '%Y/%m/%d').date()
-            print('article_date = ', article_date)
-            print('target_days = ', target_days)
         if target_days == article_date:
             result = True
         else:
@@ -326,7 +323,7 @@ def main():
         today_date = datetime.date.today()
         # Find out target day:
         target_days = today_date - datetime.timedelta(days = int_days - 1)
-        print('target_days = ', target_days)
+        print('\ntarget_days = ', target_days)
         # print('\ndate_f == today_date ? ', target_days == today_date)
 
         # file:
