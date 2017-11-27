@@ -1,6 +1,5 @@
 import ptt_board_url as ptt
 import pandas as pd
-# import datetime
 import sys
 # import psycopg2 as pg
 import time
