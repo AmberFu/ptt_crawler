@@ -32,9 +32,13 @@ def get_contentSoup(url):
         # get page text
         content = res.text
         soup = BeautifulSoup(content, "html.parser")
-        return soup
     else:
+        soup = None
         print(colored('status_code != 200', 'red'))
+
+    return soup
+
+
 
 # 2. get max pages number from index page:
 def get_total_pageNumber(soup):
@@ -154,32 +158,44 @@ def get_content_data(soup):
 # 5. Check date in the page:
 def crawler_allpost(maxPages, target_days):
     import pandas as pd
+    import time
+
     df = pd.DataFrame()
     for pages in range(maxPages, 0, -1):
         page_url = 'https://www.ptt.cc/bbs/ALLPOST/index'+str(pages).strip()+'.html'
         page_soup = get_contentSoup(page_url)
-        page_max_min_date = get_max_min_date(page_soup)  # return {max, min} = { [0] , [1] }
-        maxDay = page_max_min_date[0]
-        minDay = page_max_min_date[1]
-        # 因為日期由反序抓下，所以碰到小於 target 的日子就 break loop
-        if maxDay > target_days and minDay > target_days:
-            continue
-        # Check one-by-one:
-        elif maxDay > target_days and minDay == target_days:
-            r_ent_df = get_content_data_OneByOne(page_soup, target_days)
-            df = df.append(r_ent_df, ignore_index = True)
-        # Get all page:
-        elif maxDay == target_days and minDay == target_days:
-            r_ent_df = get_content_data(page_soup)
-            df = df.append(r_ent_df, ignore_index = True)
-        # Check one-by-one:
-        elif maxDay == target_days and minDay < target_days:
-            r_ent_df = get_content_data_OneByOne(page_soup, target_days)
-            df = df.append(r_ent_df, ignore_index = True)
-        elif maxDay < target_days and minDay < target_days:
-            break
+        if page_soup == 'None':
+            timenow = time.localtime()
+            get_time = time.strftime("%Y-%m-%d %H:%M:%S", timenow)
+            df = {'board': 'NA',
+                  'title': 'NA',
+                  'href': 'NA',
+                  'dates': 'NA',
+                  'author': 'NA',
+                  'get_time': get_time}
         else:
-            break
+            page_max_min_date = get_max_min_date(page_soup)  # return {max, min} = { [0] , [1] }
+            maxDay = page_max_min_date[0]
+            minDay = page_max_min_date[1]
+            # 因為日期由反序抓下，所以碰到小於 target 的日子就 break loop
+            if maxDay > target_days and minDay > target_days:
+                continue
+            # Check one-by-one:
+            elif maxDay > target_days and minDay == target_days:
+                r_ent_df = get_content_data_OneByOne(page_soup, target_days)
+                df = df.append(r_ent_df, ignore_index = True)
+            # Get all page:
+            elif maxDay == target_days and minDay == target_days:
+                r_ent_df = get_content_data(page_soup)
+                df = df.append(r_ent_df, ignore_index = True)
+            # Check one-by-one:
+            elif maxDay == target_days and minDay < target_days:
+                r_ent_df = get_content_data_OneByOne(page_soup, target_days)
+                df = df.append(r_ent_df, ignore_index = True)
+            elif maxDay < target_days and minDay < target_days:
+                break
+            else:
+                break
     return df
 
 
@@ -234,12 +250,26 @@ def check_date_from_article(soup, target_days):
     import datetime
     metaValue = soup.find_all('span', 'article-meta-value')
     if len(metaValue) == 4:
-        time_str = metaValue[3].string.split(' ')  # Sat Nov 25 13:02:26 2017
-        # week_en = time_str[0]
-        month_en = time_str[1]  #
-        mday_en = time_str[2]  #
-        # time_en = time_str[3]
-        year_en = time_str[4]  #
+
+        time_str = metaValue[3].string.split(' ')
+        month_en = ''
+        mday_en = ''
+        year_en = ''
+
+        if len(time_str) == 5: # Sat Nov 25 13:02:26 2017 -> time_str:  ['Sat', 'Nov', '25', '13:02:26', '2017']
+            # week_en = time_str[0]
+            month_en = time_str[1]
+            mday_en = time_str[2]
+            # time_en = time_str[3]
+            year_en = time_str[4]
+        elif len(time_str) == 6:  # Sun Dec  3 13:15:40 2017 -> time_str:  ['Sun', 'Dec', '', '3', '13:15:40', '2017']
+            # week_en = time_str[0]
+            month_en = time_str[1]
+            # time_str[2] 是空白！！！！
+            mday_en = time_str[3]
+            # time_en = time_str[4]
+            year_en = time_str[5]  #
+
         month_num = ''
         article_date = ''
         month_dic = {
@@ -278,6 +308,7 @@ def main():
     try:
         # get comment line input:
         opts, operands = getopt.getopt(sys.argv[1:], 'hd:o:')
+        ### opts:  [('-d', '2'), ('-o', 'aaa/2017-12-02.csv')]
     except getopt.GetoptError:
         print(colored("""
         Something wrong... Please Check your syntax:
