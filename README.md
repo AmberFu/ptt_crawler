@@ -24,14 +24,14 @@ The crawler for PTT hot board and PTT ALLPOST, but it's still update.
 由今天往前抓， -d 5 代表抓從今天到五天前的資料。
 
 > -d 抓取天數，int，範圍 1 ~ 7 （ 1 代表今天，會抓到今天凌晨 00:00 ）
-> 
+>
 > -o 輸出的檔名路徑
-> 
+>
 
-##### python3 ptt_all_post_v3.py -h 
+##### python3 ptt_all_post_v3.py -h
 
 > -h 提示
-> 
+>
 
 -------
 
@@ -41,3 +41,13 @@ The crawler for PTT hot board and PTT ALLPOST, but it's still update.
 
 ##### python3 ptt_hotboards_v1.py
 
+
+##### Docker Image
+
+透過 Docker 啟動爬蟲：
+
+```
+docker build -t ptt_crawler .
+mkdir out
+docker run -v `pwd`/out:/usr/src/app/out ptt_crawler
+```
